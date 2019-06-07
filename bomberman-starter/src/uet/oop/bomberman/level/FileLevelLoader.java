@@ -14,6 +14,9 @@ import uet.oop.bomberman.entities.tile.Grass;
 import uet.oop.bomberman.entities.tile.Portal;
 import uet.oop.bomberman.entities.tile.Wall;
 import uet.oop.bomberman.entities.tile.destroyable.Brick;
+import uet.oop.bomberman.entities.tile.item.BombItem;
+import uet.oop.bomberman.entities.tile.item.FlameItem;
+import uet.oop.bomberman.entities.tile.item.SpeedItem;
 import uet.oop.bomberman.exceptions.LoadLevelException;
 import uet.oop.bomberman.graphics.Screen;
 import uet.oop.bomberman.graphics.Sprite;
@@ -24,8 +27,6 @@ public class FileLevelLoader extends LevelLoader {
      * Ma trận chứa thông tin bản đồ, mỗi phần tử lưu giá trị kí tự đ�?c được từ
      * ma trận bản đồ trong tệp cấu hình
      */
-    
-
     public FileLevelLoader(Board board, int level) throws LoadLevelException {
         super(board, level);
     }
@@ -40,11 +41,13 @@ public class FileLevelLoader extends LevelLoader {
             BufferedReader br = new BufferedReader(fr);
             String str = br.readLine();
             int line = 0;
-            while (!str.equals("")) {
+            while (str != null) {
                 line++;
                 s.add(str);
                 str = br.readLine();
             }
+            br.close();
+            fr.close();
         } catch (FileNotFoundException ex) {
         } catch (IOException ex) {
         }
@@ -59,6 +62,7 @@ public class FileLevelLoader extends LevelLoader {
                 _map[i][j] = s.get(i + 1).charAt(j);
             }
         }
+
     }
 
     @Override
@@ -125,12 +129,39 @@ public class FileLevelLoader extends LevelLoader {
                         _board.addCharacter(new Kondoria(Coordinates.tileToPixel(x), Coordinates.tileToPixel(y) + Game.TILES_SIZE, _board));
                         _board.addEntity(pos, new Grass(x, y, Sprite.grass));
                         break;
+                    case 'b':
+                        LayeredEntity layer = new LayeredEntity(x, y,
+                                new Grass(x, y, Sprite.grass),
+                                new Brick(x, y, Sprite.brick));
+                        layer.addBeforeTop(new BombItem(x, y, _level, Sprite.powerup_bombs));
+                        _board.addEntity(pos, layer);
+                        break;
+
+                    case 's':
+                        layer = new LayeredEntity(x, y,
+                                new Grass(x, y, Sprite.grass),
+                                new Brick(x, y, Sprite.brick));
+
+                        layer.addBeforeTop(new SpeedItem(x, y, _level, Sprite.powerup_speed));
+                        _board.addEntity(pos, layer);
+                        break;
+
                     case 'f':
+                        System.out.println("xvscv");
+                        layer = new LayeredEntity(x, y,
+                                new Grass(x, y, Sprite.grass),
+                                new Brick(x, y, Sprite.brick));
+
+                        layer.addBeforeTop(new FlameItem(x, y, _level, Sprite.powerup_flames));
+                        _board.addEntity(pos, layer);
+                        break;
+
+                    default:
+                        _board.addEntity(pos, new Grass(x, y, Sprite.grass));
                         break;
 
                 }
             }
         }
     }
-
 }

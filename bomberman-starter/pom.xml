@@ -5,6 +5,14 @@
     <version>v0.1</version>
 
     <name>Bomberman</name>
+	
+	<dependencies>
+        <dependency>
+            <groupId>javazoom</groupId>
+            <artifactId>jlayer</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <directory>target</directory>

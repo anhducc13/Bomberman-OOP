@@ -8,7 +8,7 @@ import uet.oop.bomberman.exceptions.LoadLevelException;
  */
 public abstract class LevelLoader {
 
-    protected int _width, _height; // default values just for testing
+    protected static int _width, _height; // default values just for testing
     protected int _level;
     protected Board _board;
     protected static char[][] _map;
@@ -22,11 +22,11 @@ public abstract class LevelLoader {
 
     public abstract void createEntities();
 
-    public int getWidth() {
+    public static int getWidth() {
         return _width;
     }
 
-    public int getHeight() {
+    public static int getHeight() {
         return _height;
     }
 

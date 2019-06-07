@@ -31,5 +31,4 @@ public class Brick extends DestroyableTile {
             screen.renderEntity(x, y, this);
         }
     }
-
 }

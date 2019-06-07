@@ -2,7 +2,7 @@ package uet.oop.bomberman.entities.character.enemy;
 
 import uet.oop.bomberman.Board;
 import uet.oop.bomberman.Game;
-import uet.oop.bomberman.entities.character.enemy.ai.AILow;
+import uet.oop.bomberman.entities.character.enemy.ai.AIHigh;
 import uet.oop.bomberman.graphics.Sprite;
 
 public class Doll extends Enemy {
@@ -12,7 +12,7 @@ public class Doll extends Enemy {
 
         _sprite = Sprite.doll_left1;
 
-        _ai = new AILow();
+        _ai = new AIHigh(_board.getBomber(), this, _board);
         _direction = _ai.calculateDirection();
     }
 

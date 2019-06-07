@@ -4,11 +4,12 @@ import uet.oop.bomberman.Board;
 import uet.oop.bomberman.Game;
 import uet.oop.bomberman.entities.AnimatedEntitiy;
 import uet.oop.bomberman.entities.Entity;
-import uet.oop.bomberman.entities.character.Bomber;
 import uet.oop.bomberman.entities.character.Character;
+import uet.oop.bomberman.entities.character.Bomber;
 import uet.oop.bomberman.graphics.Screen;
 import uet.oop.bomberman.graphics.Sprite;
 import uet.oop.bomberman.level.Coordinates;
+import uet.oop.bomberman.audio.AudioGame;
 
 public class Bomb extends AnimatedEntitiy {
 
@@ -25,6 +26,7 @@ public class Bomb extends AnimatedEntitiy {
         _y = y;
         _board = board;
         _sprite = Sprite.bomb;
+        _flames = new Flame[0];
     }
 
     @Override
@@ -33,6 +35,7 @@ public class Bomb extends AnimatedEntitiy {
             _timeToExplode--;
         } else {
             if (!_exploded) {
+                
                 explode();
             } else {
                 updateFlames();
@@ -79,21 +82,25 @@ public class Bomb extends AnimatedEntitiy {
      * Xử lý Bomb nổ
      */
     protected void explode() {
-        // TODO: xử lý khi Character đứng tại vị trí Bomb
-        // TODO: tạo các Flame
-        _allowedToPassThru = true;
         _exploded = true;
 
-        Character a = _board.getCharacterAtExcluding((int)_x,(int)_y, null);
-        if (a != null) {
-            a.kill();
+        // @todo: xử lý khi Character đứng tại vị trí Bomb
+        Character character = _board.getCharacterAtExcluding((int) _x, (int) _y, null);
+        if (character != null) {
+            character.kill();
         }
 
-        _flames = new Flame[4];
-
-        for (int i = 0; i < _flames.length; i++) {
-            _flames[i] = new Flame((int) _x, (int) _y, i, Game.getBombRadius(), _board);
-        }
+        // @todo: tạo các Flame
+        // @todo: radius flame.
+        
+        int radius = Game.getBombRadius();
+        Flame flame0 = new Flame((int) _x, (int) _y, 0, radius, _board);
+        Flame flame1 = new Flame((int) _x, (int) _y, 1, radius, _board);
+        Flame flame2 = new Flame((int) _x, (int) _y, 2, radius, _board);
+        Flame flame3 = new Flame((int) _x, (int) _y, 3, radius, _board);
+        _flames = new Flame[]{flame0, flame1, flame2, flame3};
+        AudioGame.playExplosion();
+        
     }
 
     public FlameSegment flameAt(int x, int y) {
@@ -117,7 +124,6 @@ public class Bomb extends AnimatedEntitiy {
     @Override
     public boolean collide(Entity e) {
         // TODO: xử lý khi Bomber đi ra sau khi vừa đặt bom (_allowedToPassThru)
-        // TODO: xử lý va chạm với Flame của Bomb khác
         if (e instanceof Bomber) {
             double diffX = e.getX() - Coordinates.tileToPixel(getX());
             double diffY = e.getY() - Coordinates.tileToPixel(getY());
@@ -128,11 +134,11 @@ public class Bomb extends AnimatedEntitiy {
 
             return _allowedToPassThru;
         }
-
-        if (e instanceof Flame) {
+        // @todo: xử lý va chạm với Flame của Bomb khác
+        if (e instanceof Flame && !_exploded) {
             explode();
-            return true;
         }
+
         return false;
     }
 }
